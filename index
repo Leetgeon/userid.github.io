@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTTPS Link Extractor</title>
+  <style>
+    /* CSS styles go here */
+    .link-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .link-text {
+      font-size: 18px;
+      font-weight: bold;
+      color: blue; /* Customize the link color if needed */
+    }
+  </style>
+</head>
+<body>
+  <h1>HTTPS Link Extractor</h1>
+  <textarea id="inputText" rows="5" cols="50" placeholder="Enter text here"></textarea>
+  <button onclick="extractLinks()">Extract Links</button>
+  <div id="linkContainer"></div>
+
+  <script>
+    function extractLinks() {
+      var inputText = document.getElementById("inputText").value;
+      var linkContainer = document.getElementById("linkContainer");
+      linkContainer.innerHTML = ""; // Clear previous results
+
+      var linkRegex = /(https?:\/\/[^\s]+)/g;
+      var matches = inputText.match(linkRegex);
+
+      if (matches) {
+        matches.forEach(function (link) {
+          var linkBox = document.createElement("div");
+          linkBox.classList.add("link-box");
+          var linkText = document.createElement("span");
+          linkText.classList.add("link-text");
+          linkText.textContent = link;
+          linkBox.appendChild(linkText);
+          linkContainer.appendChild(linkBox);
+          extractSurroundingConversations(link, linkBox);
+        });
+      }
+    }
+
+    function extractSurroundingConversations(link, linkBox) {
+      var inputText = document.getElementById("inputText").value;
+      var conversations = inputText.split("\n"); // Assuming each conversation is separated by a new line
+      var linkIndex = conversations.findIndex(function (conversation) {
+        return conversation.includes(link);
+      });
+
+      if (linkIndex !== -1) {
+        var startIdx = Math.max(0, linkIndex - 10);
+        var endIdx = Math.min(conversations.length - 1, linkIndex + 10);
+        for (var i = startIdx; i <= endIdx; i++) {
+          var conversationBox = document.createElement("div");
+          conversationBox.classList.add("conversation-box");
+          conversationBox.textContent = conversations[i];
+          linkBox.appendChild(conversationBox);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
